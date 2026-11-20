@@ -1,0 +1,89 @@
+@model SchoolSafetySystem.ViewModels.IncidentFilterViewModel
+@using SchoolSafetySystem.Models
+@{ ViewData["Title"] = "Incidents"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Incidents</h4>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Report Incident</a>
+</div>
+
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <input name="SearchTerm" value="@Model.SearchTerm" class="form-control form-control-sm" placeholder="Search..." />
+            </div>
+            <div class="col-md-2">
+                <select name="CategoryId" class="form-select form-select-sm">
+                    <option value="">All Categories</option>
+                    @foreach (var c in Model.Categories)
+                    { <option value="@c.Id" selected="@(Model.CategoryId == c.Id)">@c.Name</option> }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="LocationId" class="form-select form-select-sm">
+                    <option value="">All Locations</option>
+                    @foreach (var l in Model.Locations)
+                    { <option value="@l.Id" selected="@(Model.LocationId == l.Id)">@l.Building - @l.Room</option> }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="Status" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    @foreach (var s in Enum.GetValues<IncidentStatus>())
+                    { <option value="@s" selected="@(Model.Status == s)">@s</option> }
+                </select>
+            </div>
+            <div class="col-md-1">
+                <input name="FromDate" type="date" value="@Model.FromDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-1">
+                <input name="ToDate" type="date" value="@Model.ToDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr><th>#</th><th>Title</th><th>Location</th><th>Date</th><th>Categories</th><th>Status</th><th>Reporter</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model.Incidents)
+                {
+                    <tr>
+                        <td>@i.Id</td>
+                        <td>@i.Title</td>
+                        <td>@i.Location?.Building</td>
+                        <td>@i.IncidentDate.ToString("dd MMM yyyy")</td>
+                        <td>
+                            @foreach (var m in i.IncidentCategoryMaps)
+                            { <span class="badge bg-secondary me-1">@m.IncidentCategory?.Name</span> }
+                        </td>
+                        <td>
+                            @if (i.Status == IncidentStatus.Pending)
+                            { <span class="badge badge-pending">Pending</span> }
+                            else if (i.Status == IncidentStatus.UnderInvestigation)
+                            { <span class="badge bg-info">Under Investigation</span> }
+                            else
+                            { <span class="badge bg-success">Resolved</span> }
+                        </td>
+                        <td>@i.Reporter?.FullName</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@i.Id" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Incidents.Any())
+                {
+                    <tr><td colspan="8" class="text-center text-muted py-4">No incidents found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

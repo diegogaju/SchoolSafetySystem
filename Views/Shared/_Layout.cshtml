@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - School Safety System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { min-height: 100vh; background: #1a3c5e; }
+        .sidebar .nav-link { color: #cdd9e5; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); border-radius: 6px; }
+        .sidebar-brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
+        .badge-pending { background-color: #ffc107; color: #000; }
+        .badge-investigation { background-color: #0dcaf0; }
+        .badge-resolved { background-color: #198754; }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+        <nav class="col-md-2 d-none d-md-block sidebar py-3 px-2">
+            <div class="sidebar-brand mb-4 px-2"><i class="bi bi-shield-check me-2"></i>SafetySystem</div>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Incidents" ? "active" : "")" asp-controller="Incidents" asp-action="Index">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Incidents
+                    </a>
+                </li>
+                @if (User.IsInRole("Administrator") || User.IsInRole("SafetyOfficer"))
+                {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Locations" ? "active" : "")" asp-controller="Locations" asp-action="Index">
+                        <i class="bi bi-geo-alt me-2"></i>Locations
+                    </a>
+                </li>
+                }
+                @if (User.IsInRole("Administrator"))
+                {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")" asp-controller="Categories" asp-action="Index">
+                        <i class="bi bi-tags me-2"></i>Categories
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")" asp-controller="Users" asp-action="Index">
+                        <i class="bi bi-people me-2"></i>Users
+                    </a>
+                </li>
+                }
+            </ul>
+            <hr class="border-secondary mt-4" />
+            <div class="px-2 text-secondary small">@User.Identity?.Name</div>
+            <form asp-controller="Account" asp-action="Logout" method="post" class="mt-2 px-2">
+                <button type="submit" class="btn btn-sm btn-outline-light w-100"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+            </form>
+        </nav>
+        }
+        <main class="@(User.Identity?.IsAuthenticated == true ? "col-md-10" : "col-12") py-4 px-4">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

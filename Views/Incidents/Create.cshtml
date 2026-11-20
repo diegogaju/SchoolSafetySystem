@@ -1,0 +1,73 @@
+@model SchoolSafetySystem.ViewModels.IncidentCreateViewModel
+@{ ViewData["Title"] = "Report Incident"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0"><i class="bi bi-plus-circle me-2"></i>Report New Incident</h4>
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="IncidentDate" class="form-label"></label>
+                    <input asp-for="IncidentDate" type="date" class="form-control" />
+                    <span asp-validation-for="IncidentDate" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="LocationId" class="form-label"></label>
+                    <select asp-for="LocationId" class="form-select">
+                        <option value="">-- Select Location --</option>
+                        @foreach (var l in Model.Locations)
+                        { <option value="@l.Id">@l.Building - @l.Room</option> }
+                    </select>
+                    <span asp-validation-for="LocationId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Categories</label>
+                    <div class="border rounded p-2" style="max-height:120px;overflow-y:auto">
+                        @foreach (var c in Model.Categories)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedCategoryIds" value="@c.Id" id="cat_@c.Id" />
+                                <label class="form-check-label" for="cat_@c.Id">@c.Name</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-12"><hr /><h6 class="fw-semibold">Witness Information (Optional)</h6></div>
+                <div class="col-md-6">
+                    <label asp-for="WitnessName" class="form-label"></label>
+                    <input asp-for="WitnessName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="WitnessContact" class="form-label"></label>
+                    <input asp-for="WitnessContact" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EvidenceFile" class="form-label"></label>
+                    <input asp-for="EvidenceFile" type="file" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <input asp-for="Notes" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

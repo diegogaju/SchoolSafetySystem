@@ -1,0 +1,20 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.log
+
+## Uploads (user files)
+wwwroot/uploads/*
+!wwwroot/uploads/.gitkeep
+
+## Environment / secrets
+appsettings.Development.json
+*.pfx
+*.key
+
+## OS
+.DS_Store
+Thumbs.db

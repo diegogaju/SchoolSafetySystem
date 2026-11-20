@@ -1,0 +1,20 @@
+@model SchoolSafetySystem.Models.Location
+@{ ViewData["Title"] = "Add Location"; }
+<h4 class="fw-bold mb-4">Add Location</h4>
+<div class="card border-0 shadow-sm" style="max-width:500px">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Building" class="form-label"></label>
+                <input asp-for="Building" class="form-control" />
+                <span asp-validation-for="Building" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Room" class="form-label"></label>
+                <input asp-for="Room" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

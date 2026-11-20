@@ -1,0 +1,64 @@
+@model SchoolSafetySystem.Models.Incident
+@using SchoolSafetySystem.Models
+@{ ViewData["Title"] = "Incident Details"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">Incident #@Model.Id</h4>
+    <div>
+        @if (User.IsInRole("Administrator") || User.IsInRole("SafetyOfficer"))
+        {
+            <a asp-action="UpdateStatus" asp-route-id="@Model.Id" class="btn btn-sm btn-warning me-1">Update Status</a>
+        }
+        @if (User.IsInRole("Administrator"))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
+        }
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary ms-1">Back</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="fw-semibold">@Model.Title</h5>
+                <p class="text-muted">@Model.Description</p>
+                <div class="row">
+                    <div class="col-6"><strong>Date:</strong> @Model.IncidentDate.ToString("dd MMM yyyy")</div>
+                    <div class="col-6"><strong>Reported:</strong> @Model.ReportedAt.ToString("dd MMM yyyy HH:mm")</div>
+                    <div class="col-6 mt-2"><strong>Location:</strong> @Model.Location?.Building - @Model.Location?.Room</div>
+                    <div class="col-6 mt-2"><strong>Reporter:</strong> @Model.Reporter?.FullName</div>
+                </div>
+                <div class="mt-2">
+                    <strong>Categories:</strong>
+                    @foreach (var m in Model.IncidentCategoryMaps)
+                    { <span class="badge bg-secondary me-1">@m.IncidentCategory?.Name</span> }
+                </div>
+                <div class="mt-2">
+                    <strong>Status:</strong>
+                    @if (Model.Status == IncidentStatus.Pending)
+                    { <span class="badge badge-pending">Pending</span> }
+                    else if (Model.Status == IncidentStatus.UnderInvestigation)
+                    { <span class="badge bg-info">Under Investigation</span> }
+                    else
+                    { <span class="badge bg-success">Resolved</span> }
+                </div>
+            </div>
+        </div>
+
+        @foreach (var d in Model.Details)
+        {
+            <div class="card border-0 shadow-sm mb-2">
+                <div class="card-header bg-white fw-semibold">Witness / Evidence</div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(d.WitnessName))
+                    { <p><strong>Witness:</strong> @d.WitnessName (@d.WitnessContact)</p> }
+                    @if (!string.IsNullOrEmpty(d.Notes))
+                    { <p><strong>Notes:</strong> @d.Notes</p> }
+                    @if (!string.IsNullOrEmpty(d.EvidenceFilePath))
+                    { <p><strong>Evidence:</strong> <a href="@d.EvidenceFilePath" target="_blank">View File</a></p> }
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,21 @@
+@model SchoolSafetySystem.ViewModels.UserManageViewModel
+@{ ViewData["Title"] = "Edit User Role"; }
+<h4 class="fw-bold mb-4">Edit Role — @Model.FullName</h4>
+<div class="card border-0 shadow-sm" style="max-width:400px">
+    <div class="card-body">
+        <p class="text-muted">@Model.Email</p>
+        <form asp-action="EditRole" asp-route-id="@Model.Id" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Assign Role</label>
+                <select name="role" class="form-select">
+                    @foreach (var r in ViewBag.AllRoles as List<string> ?? new List<string>())
+                    {
+                        <option value="@r" selected="@(ViewBag.CurrentRole == r)">@r</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning">Update Role</button>
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

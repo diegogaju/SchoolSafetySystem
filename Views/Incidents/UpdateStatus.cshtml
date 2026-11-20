@@ -1,0 +1,20 @@
+@model SchoolSafetySystem.Models.Incident
+@using SchoolSafetySystem.Models
+@{ ViewData["Title"] = "Update Status"; }
+
+<h4 class="fw-bold mb-4">Update Status — @Model.Title</h4>
+<div class="card border-0 shadow-sm" style="max-width:400px">
+    <div class="card-body">
+        <form asp-action="UpdateStatus" asp-route-id="@Model.Id" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">New Status</label>
+                <select name="status" class="form-select">
+                    @foreach (var s in Enum.GetValues<IncidentStatus>())
+                    { <option value="@s" selected="@(Model.Status == s)">@s</option> }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning">Update</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
